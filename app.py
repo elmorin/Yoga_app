@@ -208,8 +208,8 @@ def upload():
         #string = key + '<br>' + d[key][0] + '<br>' + d[key][1]
         #string = key + ':' + d[key][0] + ':' + d[key][1]
         #fix = '<p>' + string + '</p>'
-        string = key + '\n' +'\n' + ' This practice stretched/strengthened:'+ d[key][0] + '\n' +'\n' + ' This practice focused on:'+ d[key][1]
-        fix = '\n' + string + '\n'
+        string = key + '\n' +'\n' + ' This practice stretched/strengthened: '+ d[key][0] + '\n' +'\n' + ' This practice focused on: '+ d[key][1]
+        #fix = '\n' + string + '\n'
         return string
         
         
