@@ -12,7 +12,7 @@ COPY . /usr/src/app
 WORKDIR /usr/src/app
 
 # Install the dependencies
-RUN pip install Werkzeug Flask numpy Keras gevent pillow h5py tensorflow pandas numpy conda psycopg2-binary
+RUN pip install Werkzeug Flask numpy Keras gevent pillow h5py tensorflow pandas numpy conda psycopg2-binary cython
 RUN conda install opencv
 
 # Expose the port
