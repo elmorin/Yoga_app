@@ -17,7 +17,7 @@ RUN pip install Werkzeug Flask numpy Keras gevent pillow h5py tensorflow pandas 
 RUN apt-get install -y libsm6 libxext6 libxrender-dev
 RUN pip install opencv-python
 RUN apt-get install -y libgcc1 llvm
-RUN apt-get install libglib2.0-0
+RUN apt-get install -y libglib2.0-0
 
 
 
