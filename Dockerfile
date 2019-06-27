@@ -1,6 +1,6 @@
 FROM python:slim-stretch
-MAINTAINER Upendra Devisetty <upendrakumar.devisetty@gmail.com>
-LABEL Description "This App is meant for Disease prediction from Keras model"
+MAINTAINER Elyse Morin <elyselouisemorin@gmail.com>
+LABEL Description "This App is meant for Yoga Pose prediction from Keras model"
 
 # Update the OS
 RUN apt-get update
@@ -12,7 +12,7 @@ COPY . /usr/src/app
 WORKDIR /usr/src/app
 
 # Install the dependencies
-RUN pip install Werkzeug Flask numpy Keras gevent pillow h5py tensorflow
+RUN pip install Werkzeug Flask numpy Keras gevent pillow h5py tensorflow pandas numpy cv2
 
 # Expose the port
 EXPOSE 5000

@@ -11,11 +11,13 @@ from scipy.spatial import distance
 import cv2
 import json
 
+
 # Keras
 from keras.applications import VGG16
 from keras.preprocessing import image as kimage
 from keras.applications.vgg16 import preprocess_input
 from keras.models import load_model
+
 
 import tensorflow as tf
 from PIL import ExifTags, Image
@@ -30,10 +32,10 @@ from flask import jsonify
 # Define a flask app
 app = Flask(__name__)
 
-modelVGG = VGG16(include_top=True,input_shape=(224, 224, 3))
+modelVGG = VGG16(include_top=True,
+                  input_shape=(224, 224, 3))
 #remove the classification layer (fc8)
 modelVGG.layers.pop()
-
 modelVGG.layers.pop()
 #fix the output of the model
 modelVGG.outputs = [modelVGG.layers[-3].output]
@@ -50,6 +52,9 @@ final=[]
 
 desc_file = "./models/pose_descriptions.csv"
 
+# Defining a graph for some reason, see below
+graph = tf.get_default_graph()
+
 result_strength = {}
 with open(desc_file, 'r') as fh_in:
   for line in fh_in:
@@ -59,21 +64,9 @@ with open(desc_file, 'r') as fh_in:
 result_theme = {}
 with open(desc_file, 'r') as fh_in:
   for line in fh_in:
-    line = line.strip().split(',')
+    line = line.strip().split(",")
     result_theme[line[0]] = line[2]
 
-# Defining a graph for some reason, see below
-graph = tf.get_default_graph()
-
-
-def video_duration(file_path):
-  cap = cv2.VideoCapture(file_path)
-  fps = cap.get(cv2.CAP_PROP_FPS)
-  frame_count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
-  duration = frame_count/fps
-  minutes = (duration/60)
-  cap.release()
-  return minutes
 
 def remove_dups(lst):
     if len(lst)>1:
@@ -90,7 +83,7 @@ def model_predict(file_path, model):
   cap = cv2.VideoCapture(file_path)
   fps = cap.get(cv2.CAP_PROP_FPS)
   fps_r = round(fps)
-  seconds = fps_r * 2
+  seconds = fps_r * 1
   count = 0
   while cap.isOpened():
       ret, frame = cap.read()
@@ -125,7 +118,7 @@ def model_predict(file_path, model):
 
           out = (prob == prob.max(axis=1)).astype(int)
           if out[:,0]==1:
-          	poses.append('Boat')
+            poses.append('Boat')
           elif out[:,1]==1:
             poses.append('Bow')
           elif out[:,2]==1:
@@ -150,13 +143,40 @@ def model_predict(file_path, model):
   final=[]
   number = len(poses)-2
   for i in range(0,int(number),2):
-  	  if poses[i]==poses[i+1]==poses[i+2]:
-	      final.append(poses[i])
+    if poses[i]==poses[i+1]==poses[i+2]:
+      final.append(poses[i])
 
   remove_dups(final)
-  return final
 
+  str1=''
+  str2=''
+  str3=''
 
+  for i in final:
+    str1=str1+result_strength[i]+'; '
+  str1 = str1[0:-2]
+  for i in final:
+    str2=str2+result_theme[i]+'; '
+  str2 = str2[0:-2]
+  for i in final:
+    str3=str3+i+', '
+  str3 = str3[0:-2]
+
+  #d={}
+  #key="poses"
+  #value=str3
+  #key2="Strength"
+  #value2=str1
+  #key3="Theme"
+  #value3=str2
+
+  #d[key] = value
+  #d[key2] = value2
+  #d[key3] = value3
+
+  description = str3 + '\n' + "These Poses Stretched/Strengthened: " + str1 + '\n'+ "This practice: " +str2
+
+  return description
 
 @app.route('/', methods=['GET'])
 def index():
@@ -179,42 +199,9 @@ def upload():
         f.save(file_path)
 
         result = model_predict(file_path, model)
-        
-        #return jsonify(result)
+        result = result.replace('\n', '<br>')
 
-        str1=''
-        str2=''
-        str3=''
-
-        for i in result:
-          str1=str1+result_strength[i]+'; '
-        str1 = str1[0:-2]
-        for i in result:
-          str2=str2+result_theme[i]+'; '
-        str2 = str2[0:-2]
-        for i in result:
-          str3=str3+i+', '
-        str3 = str3[0:-2]
-        
-        minutes = video_duration(file_path)
-        
-                
-        d={}
-        key=str3
-        d[key] = str1
-        d[key]=[d[key]]
-        d[key].append(str2)
-
-        #string = key + '<br>' + d[key][0] + '<br>' + d[key][1]
-        #string = key + ':' + d[key][0] + ':' + d[key][1]
-        #fix = '<p>' + string + '</p>'
-        string = key + '\n' +'\n' + ' This practice stretched/strengthened:'+ d[key][0] + '\n' +'\n' + ' This practice focused on:'+ d[key][1]
-        fix = '\n' + string + '\n'
-        return string
-        
-        
-        
-
+        return jsonify(result)
 
 from flask import send_file
 @app.route('/get_image')

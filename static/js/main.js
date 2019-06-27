@@ -104,7 +104,7 @@ function getExtension(filename) {
                 // Get and display the result
                 $('.loader').hide();
                 $('#result').fadeIn(600);
-                $('#result').text(' Prediction:  ' + data);
+                $('#result').html(' Prediction:  ' + data);
                 console.log('Success!');
             },
         });
