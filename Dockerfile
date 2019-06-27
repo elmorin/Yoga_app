@@ -12,8 +12,15 @@ COPY . /usr/src/app
 WORKDIR /usr/src/app
 
 # Install the dependencies
+RUN apk add --no-cache --virtual .build-deps gcc musl-dev
 RUN pip install Werkzeug Flask numpy Keras gevent pillow h5py tensorflow pandas numpy conda psycopg2-binary cython
 RUN conda install opencv llvm gcc libgcc
+RUN apk del .build-deps gcc musl-dev
+
+
+
+
+
 
 # Expose the port
 EXPOSE 5000
