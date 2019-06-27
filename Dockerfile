@@ -13,7 +13,7 @@ COPY . /usr/src/app
 WORKDIR /usr/src/app
 
 # Install the dependencies
-RUN pip install Werkzeug Flask numpy Keras gevent pillow h5py tensorflow pandas numpy conda psycopg2-binary cython
+RUN pip install Werkzeug Flask numpy Keras gevent pillow h5py tensorflow pandas numpy psycopg2-binary cython
 RUN apt-get install -y libsm6 libxext6 libxrender-dev
 RUN pip install opencv-python
 RUN apt-get install -y libgcc1 llvm
