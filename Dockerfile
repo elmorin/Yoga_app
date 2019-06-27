@@ -12,7 +12,7 @@ COPY . /usr/src/app
 WORKDIR /usr/src/app
 
 # Install the dependencies
-RUN pip install Werkzeug Flask numpy Keras gevent pillow h5py tensorflow pandas numpy
+RUN pip install Werkzeug Flask numpy Keras gevent pillow h5py tensorflow pandas numpy opencv-python
 
 # Expose the port
 EXPOSE 5000
