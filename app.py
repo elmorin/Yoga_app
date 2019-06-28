@@ -29,7 +29,7 @@ from flask import jsonify
 
 # Define a flask app
 app = Flask(__name__)
-
+#modelVGG = load_model('models/VGG16Model.hdf5')
 modelVGG = VGG16(include_top=True,input_shape=(224, 224, 3))
 #remove the classification layer (fc8)
 modelVGG.layers.pop()
@@ -40,7 +40,6 @@ modelVGG.outputs = [modelVGG.layers[-3].output]
 
 model = load_model('./models/VGG16Model_retrained.hdf5')
 model.outputs = [model.layers[-1].output]
-
 
 model._make_predict_function()  # Necessary
 print('Model loaded. Check http://127.0.0.1:5000/')
@@ -197,6 +196,7 @@ def upload():
         str3 = str3[0:-2]
         
         minutes = video_duration(file_path)
+        minutes = round(float(minutes), 2)
         
                 
         d={}
@@ -208,7 +208,7 @@ def upload():
         #string = key + '<br>' + d[key][0] + '<br>' + d[key][1]
         #string = key + ':' + d[key][0] + ':' + d[key][1]
         #fix = '<p>' + string + '</p>'
-        string = key + '\n' +'\n' + ' This practice stretched/strengthened: '+ d[key][0] + '\n' +'\n' + ' This practice focused on: '+ d[key][1]
+        string = '\n' + key + '\n' +'\n' + 'This practice stretched/strengthened: '+ d[key][0] + '\n' +'\n' + 'This practice focused on: '+ d[key][1] + '\n' +'\n' + 'This practice lasted: '+ str(minutes) + ' minutes'
         #fix = '\n' + string + '\n'
         return string
         
