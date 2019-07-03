@@ -179,18 +179,16 @@ def upload():
 
         result = model_predict(file_path, model)
         
-        #return jsonify(result)
-
+        unique_poses = np.unique(result)
+        
         str1=''
         str2=''
         str3=''
 
-        for i in result:
-          str1=str1+result_strength[i]+'; '
-        str1 = str1[0:-2]
-        for i in result:
-          str2=str2+result_theme[i]+'; '
-        str2 = str2[0:-2]
+        for i in unique_poses:
+          str1=str1+'\n'+result_strength[i]
+        for i in unique_poses:
+          str2=str2+'\n'+result_theme[i]
         for i in result:
           str3=str3+i+', '
         str3 = str3[0:-2]
@@ -208,7 +206,7 @@ def upload():
         #string = key + '<br>' + d[key][0] + '<br>' + d[key][1]
         #string = key + ':' + d[key][0] + ':' + d[key][1]
         #fix = '<p>' + string + '</p>'
-        string = key + '\n' +'\n' + 'This practice stretched/strengthened: '+ d[key][0] + '\n' +'\n' + 'This practice focused on: '+ d[key][1] + '\n' +'\n' + 'This practice lasted: '+ str(minutes) + ' minutes'
+        string = key + '\n' +'\n' + 'This practice: '+ d[key][0]+ d[key][1] +'\n' +'\n' + 'You practiced for: '+ str(minutes) + ' minutes'
         #fix = '\n' + string + '\n'
         return string
         
